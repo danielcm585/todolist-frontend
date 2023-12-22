@@ -23,7 +23,6 @@ export default function TaskCard({ task, setTasks }) {
     api.post(`/task/toggle/${task.id}`, {})
     .then((resp) => resp.data)
     .then((resp) => {
-        console.log('here')
         toast.success(resp.message, {
           position: "bottom-center",
           autoClose: 5000,
