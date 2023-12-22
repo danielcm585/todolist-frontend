@@ -1,3 +1,6 @@
+import { toast } from "react-toastify";
+import { api, setToken } from '../axios';
+
 export default function TaskCard({ task, setTasks }) {
   const formatDate = (date) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -15,7 +18,35 @@ export default function TaskCard({ task, setTasks }) {
   }
 
   const postToggleRequest = async () => {
-    // TODO: Send toggle request
+    const token = sessionStorage.getItem('token');
+    setToken(token);
+    api.post(`/task/toggle/${task.id}`, {})
+    .then((resp) => resp.data)
+    .then((resp) => {
+        console.log('here')
+        toast.success(resp.message, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });  
+      })
   }
 
   const toggleIsDone = () => {
@@ -49,7 +80,7 @@ export default function TaskCard({ task, setTasks }) {
       <input type="checkbox" value={task.isDone} defaultChecked={task.isDone} onChange={toggleIsDone} />
       <div className="ml-4">
         <p className="text-lg font-semibold text-ellipsis">
-          {task.title}
+          {task.name}
         </p>
         <p className="text-xs text-gray-500">
           {formatDate(new Date(task.dueDate))}
